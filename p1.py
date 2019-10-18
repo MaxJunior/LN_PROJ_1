@@ -11,6 +11,11 @@ def get_perguntas():
     """
     Importar perguntas para formato a ser processado
     """
+    
+    with open('test.txt','r', encoding='utf8') as fin:
+    raw = fin.read().lower()  #lower the test questions
+    
+    tokens = nltk.sent_tokenize(raw) # converts to list of questionss
 
 def preprocessing():
     """
