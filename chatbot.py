@@ -101,9 +101,9 @@ def get_questions(xml_file_name):
 
 
 def get_queries(test_file_name):
-    '''
-    Importar perguntas para formato a ser processado
-    '''
+   '''
+   Importar perguntas para formato a ser processado
+   '''
     
    test_file = open(test_file_name, mode="r", encoding="utf-8")
 
@@ -182,10 +182,11 @@ def main():
    ''' get the xml file name and test file name from command line '''
    xml_file_name, test_file_name  = sys.argv[1: ]
 
-   queries = get_queries(xml_file_name)
+   # lista com os queries preprocessados
+   queries = get_queries(test_file_name)
 
    # formato de elemento de questions: [pergunta, id, titulo]
-   questions = get_questions(test_file_name)
+   questions = get_questions(xml_file_name)
 
    # find best match and print in results.txt
    write_results(queries, questions)
