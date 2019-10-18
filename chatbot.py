@@ -1,7 +1,17 @@
 import sys
 from utils  import  ID, DOCUMENT, QUESTION, ANSWER,FAQ, TITLE
 from xml.dom import minidom
+from nltk.stem import RSLPStemmer
+import nltk.corpus as corpus
+from nltk import word_tokenize
+import math
 
+
+# stemmer for portuguese words
+stemmer = RSLPStemmer()
+
+# list of portuguese stopwords
+stopwords = corpus.stopwords.words('portuguese')
 
 def get_documents_xml_file (xml_file_name):
     ''' given a xml file , return all the element
@@ -17,7 +27,8 @@ def get_faq_content(faq_obj):
         returns a string, in a list, obtained by concatenating all questions 
         contained in the faq_obj
     '''
-    return ' '.join([get_question(question) for question in faq_obj.getElementsByTagName(QUESTION)]).lower()
+    #return ' '.join([get_question(question) for question in faq_obj.getElementsByTagName(QUESTION)]).lower()
+    return [get_question(question) for question in faq_obj.getElementsByTagName(QUESTION)]
 
 def  get_faqs(doc_obj):
     ''' given a doc_obj : <document> type 
@@ -62,9 +73,71 @@ def get_all_documents_content(list_docs_object):
     return [ [document_title(doc_obj) , get_document_content(doc_obj)] for  doc_obj  in list_docs_object]
 
 
+#
+# PREPROCESSING
+#
+
+
+def preprocess_sentence(sent):
+    '''
+    Pre-processamento das perguntas:
+    - tokenize
+    - remover Stop Words
+    - Stemming
+    '''
+
+    # tokenize
+    tokens = word_tokenize(sent)
+
+    # remover stopwords
+    tokens = [t for t in tokens if not t in stopwords]
+
+    # stemming
+    stem_tokens = [stemmer.stem(t) for t in tokens]
+
+    return stem_tokens
+
+
+def get_tf(wordDict, bow):
+    '''
+    get TF score for each word in the document
+    '''
+    tfDict = {}
+    bowCount = len(bow)
+    for word, count in wordDict.items():
+        tfDict[word] = count/float(bowCount)
+    return tfDict
+
+
+def get_idf(docList):
+    '''
+    get IDF score of every word in the corpus
+    '''
+    idfDict = {}
+    N = len(docList)
+    idfDict = dict.fromkeys(docList[0].keys(), 0)
+    for doc in docList:
+        for word, val in doc.items():
+            if val > 0:
+                idfDict[word] += 1
+
+    for word, val in idfDict.items():
+        idfDict[word] = math.log10(N/float(val))
+
+    return idfDict
+
+def get_tfidf(tfBow, idfs):
+    '''
+    get the TF-IDF score for each word, by multiplying the TF and IDF scores
+    '''
+    tfidf = {}
+    for word, val in tfBow.items():
+        tfidf[word] = val*idfs[word]
+    return tfidf
 
 
 def main():
+
    ''' get the xml file name and test file name from command line '''
    xml_file_name,test_file_name  = sys.argv[1: ]
 
@@ -73,9 +146,49 @@ def main():
    ''' get the list of all docs, where each doc have content associated [title, [answer_id,questions] ] '''
    docs_parsed = get_all_documents_content(xml_docs)
    ''' print the first 2 documents '''
-   print(docs_parsed[:2])
+   #print(docs_parsed[:2])
 
+   #cont = get_document_content(xml_docs[0])
+   
+   wordSet = set()
+
+   # formato de elemento de questions: [pergunta, id, titulo]
+   questions = []
+     
+   tfs = []
+   tfidfs = []
+
+   for doc in docs_parsed:
+       #print("\nTitulo: ",doc[0])
+       titulo = preprocess_sentence(doc[0])
+       for faq in doc[1]:
+           #print("\nTitulo: ",faq[0], "\n\nQuestions:\n")
+           # iterate over variations of same faq
+           for i, q in enumerate(faq[1]):
+               #print(str(i+1)+".",q)
+               # preprocessing
+               prep = preprocess_sentence(q)
+               if prep != []:
+                    questions.append([prep,faq[0],titulo])
+                    #print(str(i+1)+".",prep,"\n")
+                    wordSet = wordSet | set(prep)
+
+   for q in questions:
+       wordDict = dict.fromkeys(wordSet, 0) 
+       for word in q[0]:
+           wordDict[word]+=1
+
+       #print(q[0])
+       tfs.append( get_tf(wordDict, q[0]) )
+
+   idfs = get_idf(tfs)
+
+   for i, q in enumerate(questions):
+       tfidfs.append(get_tfidf(tfs[i], idfs))
     
+   print("DONE")
+
+
 
 if __name__ == "__main__":
     main()
