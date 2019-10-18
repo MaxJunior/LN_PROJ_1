@@ -1,0 +1,6 @@
+ID =    'id'
+FAQ  = 'faq'
+QUESTION = 'pergunta'
+ANSWER = 'resposta'
+DOCUMENT = 'documento'
+TITLE  = 'titulo'
