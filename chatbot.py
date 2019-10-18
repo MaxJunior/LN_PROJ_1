@@ -4,7 +4,8 @@ from xml.dom import minidom
 from nltk.stem import RSLPStemmer
 import nltk.corpus as corpus
 from nltk import word_tokenize
-import math
+import unidecode
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 # stemmer for portuguese words
@@ -73,18 +74,18 @@ def get_all_documents_content(list_docs_object):
     return [ [document_title(doc_obj) , get_document_content(doc_obj)] for  doc_obj  in list_docs_object]
 
 
-#
-# PREPROCESSING
-#
-
 
 def preprocess_sentence(sent):
     '''
     Pre-processamento das perguntas:
+    - remove acentos
     - tokenize
-    - remover Stop Words
+    - remove Stop Words
     - Stemming
     '''
+
+    # remove accentuation
+    sent = unidecode.unidecode(sent)
 
     # tokenize
     tokens = word_tokenize(sent)
@@ -98,42 +99,30 @@ def preprocess_sentence(sent):
     return stem_tokens
 
 
-def get_tf(wordDict, bow):
-    '''
-    get TF score for each word in the document
-    '''
-    tfDict = {}
-    bowCount = len(bow)
-    for word, count in wordDict.items():
-        tfDict[word] = count/float(bowCount)
-    return tfDict
+def get_ID(query, questions):
+    """
+    Percorre cada pergunta e compara com o query.
+    Retorna o ID da pergunta mais semelhante, usando o TD-IDF.
+    Experimentar várias semelhancas antes de escolher a final.
+    """
+    best_id = 'none'
+    best_similarity = -1
+    best_match = ''
+    for question in questions:
+        tfidf = TfidfVectorizer().fit_transform([' '.join(query), ' '.join(question[0])])
+        pairwise_similarity = tfidf * tfidf.T
+        sim = pairwise_similarity[(0,1)]
+        if sim > best_similarity:
+            best_similarity = sim
+            best_id = question[1]
+            best_match = ' '.join(question[0])
 
+    # Debug
+    print("Query \t\t= "+' '.join(query))
+    print("Best match \t= "+best_match)
+    print("Best_id \t= "+best_id+"\n")
 
-def get_idf(docList):
-    '''
-    get IDF score of every word in the corpus
-    '''
-    idfDict = {}
-    N = len(docList)
-    idfDict = dict.fromkeys(docList[0].keys(), 0)
-    for doc in docList:
-        for word, val in doc.items():
-            if val > 0:
-                idfDict[word] += 1
-
-    for word, val in idfDict.items():
-        idfDict[word] = math.log10(N/float(val))
-
-    return idfDict
-
-def get_tfidf(tfBow, idfs):
-    '''
-    get the TF-IDF score for each word, by multiplying the TF and IDF scores
-    '''
-    tfidf = {}
-    for word, val in tfBow.items():
-        tfidf[word] = val*idfs[word]
-    return tfidf
+    return best_id
 
 
 def main():
@@ -141,52 +130,38 @@ def main():
    ''' get the xml file name and test file name from command line '''
    xml_file_name,test_file_name  = sys.argv[1: ]
 
+   test_file = open(test_file_name, mode="r", encoding="utf-8")
+   results_file = open("results.txt", mode="w", encoding="utf-8")
+
    ''' get the content of all the document in the xml structure '''
    xml_docs = get_documents_xml_file(xml_file_name)
    ''' get the list of all docs, where each doc have content associated [title, [answer_id,questions] ] '''
    docs_parsed = get_all_documents_content(xml_docs)
    ''' print the first 2 documents '''
-   #print(docs_parsed[:2])
+   #print(docs_parsed[:2])   
 
-   #cont = get_document_content(xml_docs[0])
-   
-   wordSet = set()
+   queries = []
+   for query in test_file:
+       prep = preprocess_sentence(query)
+       queries.append(prep)
 
    # formato de elemento de questions: [pergunta, id, titulo]
    questions = []
-     
-   tfs = []
-   tfidfs = []
-
    for doc in docs_parsed:
-       #print("\nTitulo: ",doc[0])
        titulo = preprocess_sentence(doc[0])
        for faq in doc[1]:
-           #print("\nTitulo: ",faq[0], "\n\nQuestions:\n")
            # iterate over variations of same faq
            for i, q in enumerate(faq[1]):
-               #print(str(i+1)+".",q)
                # preprocessing
                prep = preprocess_sentence(q)
                if prep != []:
                     questions.append([prep,faq[0],titulo])
-                    #print(str(i+1)+".",prep,"\n")
-                    wordSet = wordSet | set(prep)
 
-   for q in questions:
-       wordDict = dict.fromkeys(wordSet, 0) 
-       for word in q[0]:
-           wordDict[word]+=1
+   # find best match and print in results.txt
+   for query in queries[:-1]:
+       results_file.write(get_ID(query, questions)+"\n")
+   results_file.write(get_ID(queries[-1], questions))
 
-       #print(q[0])
-       tfs.append( get_tf(wordDict, q[0]) )
-
-   idfs = get_idf(tfs)
-
-   for i, q in enumerate(questions):
-       tfidfs.append(get_tfidf(tfs[i], idfs))
-    
-   print("DONE")
 
 
 
