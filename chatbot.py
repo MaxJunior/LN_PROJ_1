@@ -4,6 +4,7 @@ from utils  import preproc_aux
 from nltk.stem import RSLPStemmer
 import nltk.corpus as corpus
 from nltk import word_tokenize
+from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
@@ -83,9 +84,15 @@ def get_ID(query, questions):
     best_similarity = -1
     best_match = ''
     for question in questions:
+        # matrix in which lines are the sentences, and columns are the terms
         tfidf = TfidfVectorizer().fit_transform([' '.join(query), ' '.join(question[0])])
-        pairwise_similarity = tfidf * tfidf.T
-        sim = pairwise_similarity[(0,1)]
+        
+       # pairwise_similarity = tfidf * tfidf.T    # multiplies vectors of sentences
+        #print(tfidf.shape)
+       
+        val = cosine_similarity(tfidf[0], tfidf[1])
+       
+        sim = val[(0,0)]
         if sim > best_similarity:
             best_similarity = sim
             best_id = question[1]
@@ -108,11 +115,11 @@ def write_results(queries, questions):
 
     results_file.write(get_ID(queries[-1], questions))
 
-#def main():
-def init_main(xml_file_name, test_file_name):
+def main():
+#def init_main(xml_file_name, test_file_name):
 
    ''' get the xml file name and test file name from command line '''
-   #xml_file_name, test_file_name  = sys.argv[1: ]
+   xml_file_name, test_file_name  = sys.argv[1: ]
    # lista com os queries preprocessados
    queries = get_queries(test_file_name)
    # formato de elemento de questions: [pergunta, id, titulo]
@@ -120,7 +127,6 @@ def init_main(xml_file_name, test_file_name):
    # find best match and print in results.txt
    write_results(queries, questions)
 
-'''
+
 if __name__ == "__main__":
     main()
-'''
