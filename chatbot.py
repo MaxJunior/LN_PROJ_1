@@ -131,6 +131,9 @@ def get_ID(query, questions):
             best_id = question[1]
             best_match = ' '.join(question[0])
 
+    # return 0 for very different queries
+    if best_similarity < 0.4:
+        best_id = '0'
     
     # dev ###################################
     print("Query \t\t= "+' '.join(query))
