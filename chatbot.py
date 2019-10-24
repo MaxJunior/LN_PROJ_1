@@ -119,13 +119,19 @@ def get_ID(query, questions):
     sentences.append(' '.join(query))
     ids = [question[1] for question in questions]
 
+    # Tf-idf-weighted document-term matrix.
+    # one sentences per line, one term per column
     tfidf = TfidfVectorizer().fit_transform(sentences)
-    vals = cosine_similarity(tfidf[-1], tfidf)
-    index = vals.argsort()[0][-2]
-    flat = vals.flatten()
-    flat.sort()
-    req_tfidf = flat[-2]
-    if(req_tfidf == 0):
+
+    # compute cosine similarity between the query and all other sentences
+    vals = cosine_similarity(tfidf[-1], tfidf[:-1])[0]
+
+    # get index of highest similarity
+    index = vals.argmax()
+
+    # compute if similarity is significant
+    # otherwise, query is not recognized
+    if(vals[index] < 0.4):
         best_id = '0'
     else:
         best_id = ids[index]
