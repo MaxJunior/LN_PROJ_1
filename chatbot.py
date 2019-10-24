@@ -114,30 +114,23 @@ def get_ID(query, questions):
     Experimentar várias semelhancas antes de escolher a final.
     """
     best_id = 'none'
-    best_similarity = -1
-    best_match = ''
-    for question in questions:
-        # matrix in which lines are the sentences, and columns are the terms
-        tfidf = TfidfVectorizer().fit_transform([' '.join(query), ' '.join(question[0])])
-        
-       # pairwise_similarity = tfidf * tfidf.T    # multiplies vectors of sentences
-        #print(tfidf.shape)
-       
-        val = cosine_similarity(tfidf[0], tfidf[1])
-       
-        sim = val[(0,0)]
-        if sim > best_similarity:
-            best_similarity = sim
-            best_id = question[1]
-            best_match = ' '.join(question[0])
 
-    # return 0 for very different queries
-    if best_similarity < 0.4:
+    sentences = [' '.join(question[0]) for question in questions]
+    sentences.append(' '.join(query))
+    ids = [question[1] for question in questions]
+
+    tfidf = TfidfVectorizer().fit_transform(sentences)
+    vals = cosine_similarity(tfidf[-1], tfidf)
+    index = vals.argsort()[0][-2]
+    flat = vals.flatten()
+    flat.sort()
+    req_tfidf = flat[-2]
+    if(req_tfidf == 0):
         best_id = '0'
-    
+    else:
+        best_id = ids[index]
+
     # dev ###################################
-    print("Query \t\t= "+' '.join(query))
-    print("Best match \t= "+best_match)
     print("Best_id \t= "+best_id+"\n")
     # end of dev ############################
 
