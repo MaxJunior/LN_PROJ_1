@@ -42,7 +42,8 @@ def preproc_aux(l):
     # TUDO EM MINÚSCULAS
     l = l.lower()
     # ELIMINA PONTUAÇÃO
-    l = re.sub("[?|\.|!|:|,|;]", '', l)
+    l = re.sub("[?|\.|!|:|,|;|\"|\']", '', l)
+    l = re.sub("\n", ' ', l)
     # fica so com as perguntas
     l = re.sub("^\w+\t+[^\w]", '', l)
     return l
