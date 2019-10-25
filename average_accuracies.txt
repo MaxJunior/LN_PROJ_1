@@ -1,0 +1,190 @@
+jaccard_distance        noStop = True   Stem = True
+
+1        Accuracy : 0.6911
+2        Accuracy : 0.6942
+3        Accuracy : 0.6774
+4        Accuracy : 0.6758
+5        Accuracy : 0.7080
+6        Accuracy : 0.6896
+7        Accuracy : 0.6972
+8        Accuracy : 0.6804
+9        Accuracy : 0.7125
+10       Accuracy : 0.7034
+
+Average Accuracy : 0.6930
+
+
+dice_distance   noStop = True   Stem = True
+
+1        Accuracy : 0.6713
+2        Accuracy : 0.6911
+3        Accuracy : 0.6850
+4        Accuracy : 0.6835
+5        Accuracy : 0.6865
+6        Accuracy : 0.6774
+7        Accuracy : 0.6713
+8        Accuracy : 0.6927
+9        Accuracy : 0.6667
+10       Accuracy : 0.6911
+
+Average Accuracy : 0.6817
+
+
+tfidf_cosine    noStop = True   Stem = True
+
+1        Accuracy : 0.6865
+2        Accuracy : 0.7080
+3        Accuracy : 0.7095
+4        Accuracy : 0.7034
+5        Accuracy : 0.7309
+6        Accuracy : 0.7049
+7        Accuracy : 0.7171
+8        Accuracy : 0.6820
+9        Accuracy : 0.7095
+10       Accuracy : 0.7064
+
+Average Accuracy : 0.7058
+
+
+jaccard_distance        noStop = True   Stem = False
+
+1        Accuracy : 0.6758
+2        Accuracy : 0.6544
+3        Accuracy : 0.6728
+4        Accuracy : 0.6697
+5        Accuracy : 0.6544
+6        Accuracy : 0.6560
+7        Accuracy : 0.6789
+8        Accuracy : 0.6667
+9        Accuracy : 0.6881
+10       Accuracy : 0.6636
+
+Average Accuracy : 0.6680
+
+
+dice_distance   noStop = True   Stem = False
+
+1        Accuracy : 0.6147
+2        Accuracy : 0.6391
+3        Accuracy : 0.6300
+4        Accuracy : 0.6514
+5        Accuracy : 0.6606
+6        Accuracy : 0.6498
+7        Accuracy : 0.6529
+8        Accuracy : 0.6315
+9        Accuracy : 0.6621
+10       Accuracy : 0.6315
+
+Average Accuracy : 0.6424
+
+
+tfidf_cosine    noStop = True   Stem = False
+
+1        Accuracy : 0.6498
+2        Accuracy : 0.6651
+3        Accuracy : 0.6667
+4        Accuracy : 0.6728
+5        Accuracy : 0.6758
+6        Accuracy : 0.6820
+7        Accuracy : 0.7003
+8        Accuracy : 0.6758
+9        Accuracy : 0.6621
+10       Accuracy : 0.6835
+
+Average Accuracy : 0.6734
+
+
+jaccard_distance        noStop = False  Stem = True
+
+1        Accuracy : 0.6131
+2        Accuracy : 0.6361
+3        Accuracy : 0.6391
+4        Accuracy : 0.6193
+5        Accuracy : 0.6361
+6        Accuracy : 0.6361
+7        Accuracy : 0.6284
+8        Accuracy : 0.6483
+9        Accuracy : 0.6407
+10       Accuracy : 0.6193
+
+Average Accuracy : 0.6317
+
+
+dice_distance   noStop = False  Stem = True
+
+1        Accuracy : 0.6024
+2        Accuracy : 0.5979
+3        Accuracy : 0.6269
+4        Accuracy : 0.6239
+5        Accuracy : 0.6101
+6        Accuracy : 0.6162
+7        Accuracy : 0.6208
+8        Accuracy : 0.6147
+9        Accuracy : 0.6330
+10       Accuracy : 0.6269
+
+Average Accuracy : 0.6173
+
+
+tfidf_cosine    noStop = False  Stem = True
+
+1        Accuracy : 0.6927
+2        Accuracy : 0.6957
+3        Accuracy : 0.7034
+4        Accuracy : 0.7034
+5        Accuracy : 0.7003
+6        Accuracy : 0.7110
+7        Accuracy : 0.7018
+8        Accuracy : 0.7003
+9        Accuracy : 0.7034
+10       Accuracy : 0.6911
+
+Average Accuracy : 0.7003
+
+
+jaccard_distance        noStop = False  Stem = False
+
+1        Accuracy : 0.5933
+2        Accuracy : 0.6177
+3        Accuracy : 0.6116
+4        Accuracy : 0.6315
+5        Accuracy : 0.6254
+6        Accuracy : 0.6177
+7        Accuracy : 0.6177
+8        Accuracy : 0.6040
+9        Accuracy : 0.6116
+10       Accuracy : 0.6116
+
+Average Accuracy : 0.6142
+
+
+dice_distance   noStop = False  Stem = False
+
+1        Accuracy : 0.5872
+2        Accuracy : 0.5902
+3        Accuracy : 0.5872
+4        Accuracy : 0.6070
+5        Accuracy : 0.5856
+6        Accuracy : 0.6147
+7        Accuracy : 0.5933
+8        Accuracy : 0.6024
+9        Accuracy : 0.5841
+10       Accuracy : 0.5872
+
+Average Accuracy : 0.5939
+
+
+tfidf_cosine    noStop = False  Stem = False
+
+1        Accuracy : 0.6667
+2        Accuracy : 0.6789
+3        Accuracy : 0.6590
+4        Accuracy : 0.6896
+5        Accuracy : 0.6774
+6        Accuracy : 0.6713
+7        Accuracy : 0.6865
+8        Accuracy : 0.6865
+9        Accuracy : 0.6927
+10       Accuracy : 0.6850
+
+Average Accuracy : 0.6794

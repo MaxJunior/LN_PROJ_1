@@ -96,16 +96,12 @@ def test_algoritm():
     result = xml_parser.get_documents_xml_file('KB.xml')
     faqs = xml_parser.get_all_documents_content(result)
     ''' data without stemming and removing stopwords'''
-    #q_train_w , a_train_w , q_test_w , a_test_w = xml_parser.get_train_test(faqs,True,False)
     data_w = xml_parser.get_train_test(faqs,True,False)
     ''' data with stremming and removing stopwords'''
-    #q_train_s_w , a_train_s_w , q_test_s_w , a_test_s_w = xml_parser.get_train_test(faqs,True,True)
     data_s_w = xml_parser.get_train_test(faqs,True,True)
     ''' data without stemming and keeping stopwords'''
-    #q_train , a_train , q_test , a_test = xml_parser.get_train_test(faqs,False,False)
     data = xml_parser.get_train_test(faqs,False,False)
     ''' data with stremming and keeping stopwords'''
-    #q_train_s , a_train_s , q_test_s , a_test_s = xml_parser.get_train_test(faqs,False,True)
     data_s = xml_parser.get_train_test(faqs,False,True)
     
     user_opcao = -1
@@ -159,10 +155,6 @@ def test_algoritm():
 #test_algoritm()
  
 
-
-
-
-
 def get_average_accuracy():
     result = xml_parser.get_documents_xml_file('KB.xml')
     faqs = xml_parser.get_all_documents_content(result)
@@ -173,34 +165,27 @@ def get_average_accuracy():
     
     results = []
 
-get_average_accuracy()
 
-get_average_accuracy()
-
-"""
 def av_acc(metric, faqs, noStop, Stem):
     results = []
-    for _ in range(10):
+    num_acc = 10
+    for i in range(num_acc):
         data = xml_parser.get_train_test(faqs,noStop,Stem)
         acc = metric(data)
-        print(" Accuracy : {:.4f}".format(acc))
+        print(i+1,"\t Accuracy : {:.4f}".format(acc))
         results.append(acc)
-    print("\nAverage Accuracy : {:.4f} \n".format( sum(results)/10))
-    return sum(results)/10
+    print("\nAverage Accuracy : {:.4f} \n".format( sum(results)/num_acc))
+    return sum(results)/num_acc
 
-def get_all_av_acc():
 
-    funcs = [jaccard_distance, dice_distance, tfidf_cosine]
-    names = ['jaccard_distance', 'dice_distance', 'tfidf_cosine']
+funcs = [jaccard_distance, dice_distance, tfidf_cosine]
+names = ['jaccard_distance', 'dice_distance', 'tfidf_cosine']
 
-    result = xml_parser.get_documents_xml_file('KB.xml')
-    faqs = xml_parser.get_all_documents_content(result)
+result = xml_parser.get_documents_xml_file('KB.xml')
+faqs = xml_parser.get_all_documents_content(result)
 
-    for noStop in [False, True]:
-        for Stem in [False, True]:
-            for i, metric in enumerate(funcs):
-                print("\n"+names[i]+"\tnoStop =",noStop,"\tStem=",Stem,"\n")
-                av_acc(metric, faqs, noStop, Stem)
-
-get_all_av_acc()
-"""
+for noStop in [True, False]:
+    for Stem in [True, False]:
+        for i, metric in enumerate(funcs):
+            print("\n"+names[i]+"\tnoStop =",noStop,"\tStem =",Stem,"\n")
+            av_acc(metric, faqs, noStop, Stem)

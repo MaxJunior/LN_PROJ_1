@@ -112,14 +112,18 @@ def get_train_test(doc_contents,noStop,bool_val):
             # select randomly what questions go into the test set, by shuffling
             random.shuffle(questions_list)
             questions_len = len(questions_list)
-            elems_train = int(.25*(questions_len))
-            for index in range(questions_len):
-                if index < elems_train:
-                    q_test.append(' '.join(preprocess_sentence(questions_list[index],noStop,bool_val)).lower())
-                    a_test.append(int(answer_id))
-                else :
-                    q_train.append(' '.join(preprocess_sentence(questions_list[index],noStop,bool_val)).lower())
-                    a_train.append(int(answer_id))                  
+            elems_train = int(.8*(questions_len))
+            if questions_len == 1:
+                q_train.append(' '.join(preprocess_sentence(questions_list[0],noStop,bool_val)).lower())
+                a_train.append(int(answer_id))     
+            else:
+                for index in range(questions_len):
+                    if index < elems_train:
+                        q_train.append(' '.join(preprocess_sentence(questions_list[index],noStop,bool_val)).lower())
+                        a_train.append(int(answer_id))
+                    else :
+                        q_test.append(' '.join(preprocess_sentence(questions_list[index],noStop,bool_val)).lower())
+                        a_test.append(int(answer_id))                  
     return q_train , a_train , q_test , a_test
 
 def get_questions_and_answers(doc_contents):    
