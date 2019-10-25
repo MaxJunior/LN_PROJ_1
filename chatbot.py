@@ -109,7 +109,7 @@ def preprocess_sentence(sent):
 
 def get_ID(query, questions):
     """
-    Percorre cada pergunta e compara com o query.
+    Compara o query com cada pergunta.
     Retorna o ID da pergunta mais semelhante, usando o TD-IDF.
     Experimentar várias semelhancas antes de escolher a final.
     """

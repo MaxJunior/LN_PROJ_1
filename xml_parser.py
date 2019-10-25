@@ -1,5 +1,34 @@
 from utils  import  ID, DOCUMENT, QUESTION, ANSWER,FAQ, TITLE, preproc_aux
 from xml.dom import minidom
+import nltk
+from nltk.stem import RSLPStemmer
+import nltk.corpus as corpus
+from nltk.metrics.scores import accuracy
+import random
+
+random.seed(7)
+stemmer = RSLPStemmer()
+stopwords = corpus.stopwords.words('portuguese')
+
+def preprocess_sentence(sent, noStop, toStem=False):
+    '''
+    Pre-processamento das perguntas:
+    - remove acentos
+    - tokenize
+    - remove Stop Words
+    - Stemming
+    '''
+    # remove accentuation
+    sent = preproc_aux(sent)
+    # tokenize
+    tokens = nltk.word_tokenize(sent)
+    # remover stopwords
+    tokens = [t for t in tokens if not t in stopwords] if noStop else tokens
+    # stemming
+    if toStem == True:
+        return [stemmer.stem(t) for t in tokens]
+    else :
+        return tokens
 
 
 def get_documents_xml_file (xml_file_name):
@@ -61,7 +90,7 @@ def get_all_documents_content(list_docs_object):
     '''
     return [ [document_title(doc_obj) , get_document_content(doc_obj)] for  doc_obj  in list_docs_object]
 
-def get_train_test(doc_contents,bool_val):   
+def get_train_test(doc_contents,noStop,bool_val):   
     ''' given a list with all the faq question list and the respective answer id ,
         and the a boolean value, bool_val, corresponding to the stemming of data.
         Return a list,preprocessed, with :
@@ -80,14 +109,16 @@ def get_train_test(doc_contents,bool_val):
         for faq in all_faqs :
             answer_id = faq[0]
             questions_list = faq[1]
+            # select randomly what questions go into the test set, by shuffling
+            random.shuffle(questions_list)
             questions_len = len(questions_list)
-            elems_train = int(.75*(questions_len))
+            elems_train = int(.25*(questions_len))
             for index in range(questions_len):
-                if index <  elems_train:
-                    q_test.append(' '.join(preprocess_sentence(questions_list[index],bool_val)).lower())
+                if index < elems_train:
+                    q_test.append(' '.join(preprocess_sentence(questions_list[index],noStop,bool_val)).lower())
                     a_test.append(int(answer_id))
                 else :
-                    q_train.append(' '.join(preprocess_sentence(questions_list[index],bool_val)).lower())
+                    q_train.append(' '.join(preprocess_sentence(questions_list[index],noStop,bool_val)).lower())
                     a_train.append(int(answer_id))                  
     return q_train , a_train , q_test , a_test
 
